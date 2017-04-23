@@ -1,57 +1,60 @@
 ﻿using System.Collections.Generic;
 
-public class ConcurrentDictionary<tkey, tvalue>
+namespace JointedBodyDrawer
 {
-    private readonly object syncLock = new object();
-    private Dictionary<tkey, tvalue> dict;
-
-    public tvalue this[tkey key]
+    public class ConcurrentDictionary<tkey, tvalue>
     {
-        get { lock (syncLock) { return dict[key]; } }
-        set { lock (syncLock) { dict[key] = value; } }
-    }
+        private readonly object syncLock = new object();
+        private Dictionary<tkey, tvalue> dict;
 
-    public int Count
-    {
-        get
+        public tvalue this[tkey key]
+        {
+            get { lock (syncLock) { return dict[key]; } }
+            set { lock (syncLock) { dict[key] = value; } }
+        }
+
+        public int Count
+        {
+            get
+            {
+                lock (syncLock)
+                {
+                    return dict.Count;
+                }
+            }
+        }
+
+        public bool ContainsKey(tkey item) { lock (syncLock) { return dict.ContainsKey(item); } }
+
+        public ConcurrentDictionary()
+        {
+            this.dict = new Dictionary<tkey, tvalue>();
+        }
+
+        public void Add(tkey key, tvalue val)
         {
             lock (syncLock)
             {
-                return dict.Count;
+                dict.Add(key, val);
             }
         }
-    }
 
-    public bool ContainsKey(tkey item) { lock (syncLock) { return dict.ContainsKey(item); } }
-
-    public ConcurrentDictionary()
-    {
-        this.dict = new Dictionary<tkey, tvalue>();
-    }
-
-    public void Add(tkey key, tvalue val)
-    {
-        lock (syncLock)
+        public void Remove(tkey key)
         {
-            dict.Add(key, val);
+            lock (syncLock)
+            {
+                dict.Remove(key);
+            }
         }
-    }
 
-    public void Remove(tkey key)
-    {
-        lock (syncLock)
+        public void Clear()
         {
-            dict.Remove(key);
+            lock (syncLock)
+            {
+                dict.Clear();
+            }
         }
-    }
 
-    public void Clear()
-    {
-        lock (syncLock)
-        {
-            dict.Clear();
-        }
+        public tkey[] GetKeysArray() { lock (syncLock) { tkey[] result = new tkey[dict.Keys.Count]; dict.Keys.CopyTo(result, 0); return result; } }
     }
-
-    public tkey[] GetKeysArray() { lock (syncLock) { tkey[] result = new tkey[dict.Keys.Count]; dict.Keys.CopyTo(result, 0); return result; } }
 }

@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Windows.Kinect;
 using System.Linq;
 
-public class Kinect : MonoBehaviour {
+public class Kinect : MonoBehaviour
+{
     private KinectSensor _Sensor;
     private BodyFrameReader _Reader;
     private static Body[] _Data = null;

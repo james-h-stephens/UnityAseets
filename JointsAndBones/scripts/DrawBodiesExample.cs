@@ -1,16 +1,23 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Windows.Kinect;
-using System;
 
-namespace JointAndBoneDrawer
+namespace JointedBodyDrawer
 {
+    /// <summary>
+    /// An example body drawer using the Kinect v2.0
+    /// </summary>
+    /// <seealso cref="UnityEngine.MonoBehaviour" />
     public class DrawBodiesExample : MonoBehaviour
     {
+        /// <summary>
+        /// The jointed bodies in the scene
+        /// </summary>
         ConcurrentDictionary<ulong, JointedBody> bodies = new ConcurrentDictionary<ulong, JointedBody>();
 
         void Update()
         {
+            // Check if kinect has any body data
             if (Kinect.HasBodyData())
             {
                 // Get Tracked Bodies
@@ -22,19 +29,24 @@ namespace JointAndBoneDrawer
                 // Loop through tracked bodies
                 foreach (var detectedBody in trackedBodies)
                 {
+                    // Determine if the body is new to the scene
                     bool isNew = !bodies.ContainsKey(detectedBody.TrackingId);
-                    // Check if dictionary already contains body
+                    
                     if (isNew)
                     {
                         // Create new body
                         bodies.Add(detectedBody.TrackingId, new JointedBody());
                     }
 
+                    // Update the joints in the body
                     UpdateBody(bodies[detectedBody.TrackingId], detectedBody.Joints);
 
                     if (isNew)
                     {
+                        // Add the bones to the body
                         AddBones(bodies[detectedBody.TrackingId]);
+
+                        // Set the joints' color
                         SetJointColor(bodies[detectedBody.TrackingId]);
                     }
 
@@ -66,6 +78,10 @@ namespace JointAndBoneDrawer
             }
         }
 
+        /// <summary>
+        /// Adds the bones to a new body
+        /// </summary>
+        /// <param name="body">The body.</param>
         private void AddBones(JointedBody body)
         {
             // Head - Shoulder
@@ -112,6 +128,11 @@ namespace JointAndBoneDrawer
             body.AddBone(JointType.AnkleLeft.ToString(), JointType.FootLeft.ToString(), .05f);
         }
 
+        /// <summary>
+        /// Updates the joint positions in the jointed body based on the kinect data
+        /// </summary>
+        /// <param name="jointedBody">The jointed body.</param>
+        /// <param name="joints">The kinect joints.</param>
         private void UpdateBody(JointedBody jointedBody, Dictionary<JointType, Windows.Kinect.Joint> joints)
         {
             foreach (var joint in joints)
@@ -122,6 +143,10 @@ namespace JointAndBoneDrawer
             }
         }
 
+        /// <summary>
+        /// Sets the color of the joint.
+        /// </summary>
+        /// <param name="jointedBody">The jointed body.</param>
         private void SetJointColor(JointedBody jointedBody)
         {
             Color meshColor = GetNextColor();
@@ -134,7 +159,10 @@ namespace JointAndBoneDrawer
             }
         }
 
-
+        /// <summary>
+        /// Gets the next color in the array of colors
+        /// </summary>
+        /// <returns></returns>
         private static Color GetNextColor()
         {
             Color returnColor = Color.black;
@@ -150,6 +178,9 @@ namespace JointAndBoneDrawer
             return returnColor;
         }
 
+        /// <summary>
+        /// The possible colors for the joints
+        /// </summary>
         private static Color[] colors = new Color[] { Color.red, Color.green, Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.black };
         private static int colorCounter = 0;
     }

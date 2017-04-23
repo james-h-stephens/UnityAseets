@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace JointAndBoneDrawer
+namespace JointedBodyDrawer
 {
+    /// <summary>
+    /// A class representing an object with joints
+    /// </summary>
     public class JointedBody
     {
         /// <summary>
-        /// The joint type
+        /// The joint type to be rendered
         /// </summary>
         public PrimitiveType JointType = PrimitiveType.Sphere;
 
         /// <summary>
-        /// The joint size
+        /// The size of the joint to be rendered
         /// </summary>
         public Vector3 JointSize = new Vector3(.1f, .1f, .1f);
 
@@ -88,6 +91,9 @@ namespace JointAndBoneDrawer
             }
         }
 
+        /// <summary>
+        /// Clears this instance of all GameObjects.
+        /// </summary>
         public void Clear()
         {
             foreach (var bone in bones)
@@ -101,7 +107,13 @@ namespace JointAndBoneDrawer
             }
         }
 
-        #region Bones
+        #region Bones        
+        /// <summary>
+        /// Adds the bone to two joints
+        /// </summary>
+        /// <param name="joint1">The first joint.</param>
+        /// <param name="joint2">The second joint.</param>
+        /// <param name="thickness">The thickness of the bone.</param>
         public void AddBone(string joint1, string joint2, float thickness = .05f)
         {
             bones.Add(new Bone(Joints[joint1], Joints[joint2], thickness));
