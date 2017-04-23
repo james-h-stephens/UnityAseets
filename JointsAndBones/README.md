@@ -1,6 +1,4 @@
 # Jointed Body Drawer
-
-## Description
 The Jointed Body Drawer is a Unity framework for drawing any object that has joints. Mostly the focus is toward NUI devices (Intel RealSense, Microsoft Kinect, Leap Motion, ect.), but it could work for any tracked object that has joints.
 
 ## Example
